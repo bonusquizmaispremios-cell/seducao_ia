@@ -206,7 +206,7 @@ def barra_salvar():
         )
     with col_btn:
         st.download_button("💾 SALVAR MEUS DADOS (.json)", data=gerar_json_sessao(),
-            file_name=f"presenca_ia_{nome_usuario}.json", mime="application/json", use_container_width=True)
+            file_name=f"presenca_ia_{nome_usuario}.json", mime="application/json", use_container_width=True, key="seducaoi3")
     st.markdown("<hr class='divider'>", unsafe_allow_html=True)
     st.markdown("""<style>
     .dica-nav{font-size:0.72em;color:#94A3B8;text-align:center;padding:2px 0 6px;}
@@ -251,55 +251,16 @@ if st.session_state.etapa == "Login":
 elif st.session_state.etapa == "App":
 
 
-    # NAVBAR
-    _nav_pgs = ['Home', 'Confianca', 'Charme', 'Oratoria', 'Atracao', 'Conversa', 'Simulador', 'Linguagem', 'Situacoes', 'Mentalidade', 'Historias', 'Academia', 'Desafio', 'Mentor']
-    _nav_ics = ['🏠', '💪', '✨', '🎤', '💘', '📱', '🎭', '👁️', '🔥', '🧠', '📖', '🎓', '🏆', '🤖']
-    _nav_lbs = ['Painel', 'Confiança e Presença', 'Charme e Humor', 'Oratória e Voz', 'Atração e Sedução', 'A Conversa Perfeita', 'Simulador de Abordagem', 'Linguagem Corporal', 'Situações Reais', 'Mentalidade do Protagonista', 'A Arte de Contar Histórias', 'Academia de Presença', 'Desafio Semanal', 'Mentor 24h']
-    _nav_idx = _nav_pgs.index(st.session_state.pagina) if st.session_state.pagina in _nav_pgs else 0
-    if '_menu_open' not in st.session_state: st.session_state['_menu_open'] = False
 
-    _cl, _cc, _cr, _cm = st.columns([1, 6, 1, 1])
-    with _cl:
-        if st.button("‹", key="nav_prev", use_container_width=True, disabled=_nav_idx==0):
-            st.session_state.pagina = _nav_pgs[_nav_idx-1]; st.rerun()
-    with _cc:
-        st.markdown(f"<div style='text-align:center;padding:7px 0;font-weight:700;font-size:0.95em;color:#1A1A2E;'>{_nav_lbs[_nav_idx]}<br><span style='font-size:0.65em;color:#94A3B8;'>{_nav_idx+1}/{len(_nav_pgs)}</span></div>", unsafe_allow_html=True)
-    with _cr:
-        if st.button("›", key="nav_next", use_container_width=True, disabled=_nav_idx==len(_nav_pgs)-1):
-            st.session_state.pagina = _nav_pgs[_nav_idx+1]; st.rerun()
-    with _cm:
-        if st.button("📋", key="nav_menu", use_container_width=True):
-            st.session_state['_menu_open'] = not st.session_state['_menu_open']; st.rerun()
+    # TABS — navegação nativa
+    (_tab_Home, _tab_Confianca, _tab_Charme, _tab_Oratoria, _tab_Atracao, _tab_Conversa, _tab_Simulador, _tab_Linguagem, _tab_Situacoes, _tab_Mentalidade, _tab_Historias, _tab_Academia, _tab_Desafio, _tab_Mentor) = st.tabs(['🏠 Painel', '💪 Confiança', '✨ Charme', '🎤 Oratória', '💘 Atração', '📱 Conversa', '🎭 Simulador', '👁️ Linguagem', '🔥 Situações', '🧠 Mentalidade', '📖 Histórias', '🎓 Academia', '🏆 Desafio', '🤖 Mentor 24h'])
 
-    if st.session_state['_menu_open']:
-        _d1 = st.columns(7)
-        if _d1[0].button("🏠", key="dk1_Home", help="Painel", use_container_width=True): st.session_state.pagina="Home"; st.rerun()
-        if _d1[1].button("💪", key="dk1_Confianca", help="Confiança e Presença", use_container_width=True): st.session_state.pagina="Confianca"; st.rerun()
-        if _d1[2].button("✨", key="dk1_Charme", help="Charme e Humor", use_container_width=True): st.session_state.pagina="Charme"; st.rerun()
-        if _d1[3].button("🎤", key="dk1_Oratoria", help="Oratória e Voz", use_container_width=True): st.session_state.pagina="Oratoria"; st.rerun()
-        if _d1[4].button("💘", key="dk1_Atracao", help="Atração e Sedução", use_container_width=True): st.session_state.pagina="Atracao"; st.rerun()
-        if _d1[5].button("📱", key="dk1_Conversa", help="A Conversa Perfeita", use_container_width=True): st.session_state.pagina="Conversa"; st.rerun()
-        if _d1[6].button("🎭", key="dk1_Simulador", help="Simulador de Abordagem", use_container_width=True): st.session_state.pagina="Simulador"; st.rerun()
-        _d2 = st.columns(7)
-        if _d2[0].button("👁️", key="dk2_Linguagem", help="Linguagem Corporal", use_container_width=True): st.session_state.pagina="Linguagem"; st.rerun()
-        if _d2[1].button("🔥", key="dk2_Situacoes", help="Situações Reais", use_container_width=True): st.session_state.pagina="Situacoes"; st.rerun()
-        if _d2[2].button("🧠", key="dk2_Mentalidade", help="Mentalidade do Protagonista", use_container_width=True): st.session_state.pagina="Mentalidade"; st.rerun()
-        if _d2[3].button("📖", key="dk2_Historias", help="A Arte de Contar Histórias", use_container_width=True): st.session_state.pagina="Historias"; st.rerun()
-        if _d2[4].button("🎓", key="dk2_Academia", help="Academia de Presença", use_container_width=True): st.session_state.pagina="Academia"; st.rerun()
-        if _d2[5].button("🏆", key="dk2_Desafio", help="Desafio Semanal", use_container_width=True): st.session_state.pagina="Desafio"; st.rerun()
-        if _d2[6].button("🤖", key="dk2_Mentor", help="Mentor 24h", use_container_width=True): st.session_state.pagina="Mentor"; st.rerun()
-
-    st.markdown("<hr class='divider'>", unsafe_allow_html=True)
-
-    # ========================
-    # HOME
-    # ========================
-    if st.session_state.pagina == "Home":
+    with _tab_Home:
         col_u, col_r = st.columns([3, 1])
         with col_u:
             st.title(f"⚡ Bem-vindo, {st.session_state.usuario}")
         with col_r:
-            if st.button("🚪 Sair", key="seducaoi3"):
+            if st.button("🚪 Sair", key="seducaoi3_d2"):
                 for k in list(st.session_state.keys()):
                     del st.session_state[k]
                 st.rerun()
@@ -360,10 +321,11 @@ elif st.session_state.etapa == "App":
         for aba, desc in guia.items():
             st.markdown(f"**{aba}** — <span style='color:#475569'>{desc}</span>", unsafe_allow_html=True)
 
-    # ========================
-    # CONFIANÇA E PRESENÇA
-    # ========================
-    elif st.session_state.pagina == "Confianca":
+        # ========================
+        # CONFIANÇA E PRESENÇA
+        # ========================
+
+    with _tab_Confianca:
         st.header("💪 Confiança e Presença")
 
         area_conf = st.selectbox("Área:", [
@@ -402,10 +364,11 @@ elif st.session_state.etapa == "App":
                     st.session_state.consultas_salvas.append({'modulo':'Confianca','tema':area_conf if 'area_conf' in dir() else '','conteudo':st.session_state['conf_temp'],'data':datetime.now().strftime('%d/%m %H:%M')})
                     st.success("❤️ Salvo!")
 
-    # ========================
-    # CHARME E HUMOR
-    # ========================
-    elif st.session_state.pagina == "Charme":
+        # ========================
+        # CHARME E HUMOR
+        # ========================
+
+    with _tab_Charme:
         st.header("✨ Charme e Humor")
 
         area_charme = st.selectbox("Área:", [
@@ -443,10 +406,11 @@ elif st.session_state.etapa == "App":
                     st.session_state.consultas_salvas.append({'modulo':'Charme','tema':area_charme if 'area_charme' in dir() else '','conteudo':st.session_state['charme_temp'],'data':datetime.now().strftime('%d/%m %H:%M')})
                     st.success("❤️ Salvo!")
 
-    # ========================
-    # ORATÓRIA E VOZ
-    # ========================
-    elif st.session_state.pagina == "Oratoria":
+        # ========================
+        # ORATÓRIA E VOZ
+        # ========================
+
+    with _tab_Oratoria:
         st.header("🎤 Oratória e Voz")
 
         area_orat = st.selectbox("Área:", [
@@ -483,10 +447,11 @@ elif st.session_state.etapa == "App":
                     st.session_state.consultas_salvas.append({'modulo':'Oratoria','tema':area_orat if 'area_orat' in dir() else '','conteudo':st.session_state['orat_temp'],'data':datetime.now().strftime('%d/%m %H:%M')})
                     st.success("❤️ Salvo!")
 
-    # ========================
-    # ATRAÇÃO E SEDUÇÃO
-    # ========================
-    elif st.session_state.pagina == "Atracao":
+        # ========================
+        # ATRAÇÃO E SEDUÇÃO
+        # ========================
+
+    with _tab_Atracao:
         st.header("💘 Atração e Sedução")
 
         area_atr = st.selectbox("Área:", [
@@ -525,10 +490,11 @@ elif st.session_state.etapa == "App":
                     st.session_state.consultas_salvas.append({'modulo':'Atracao','tema':area_atr if 'area_atr' in dir() else '','conteudo':st.session_state['atr_temp'],'data':datetime.now().strftime('%d/%m %H:%M')})
                     st.success("❤️ Salvo!")
 
-    # ========================
-    # A CONVERSA PERFEITA
-    # ========================
-    elif st.session_state.pagina == "Conversa":
+        # ========================
+        # A CONVERSA PERFEITA
+        # ========================
+
+    with _tab_Conversa:
         st.header("📱 A Conversa Perfeita")
 
         tab1, tab2 = st.tabs(["🎯 Aprender a Técnica", "💬 Me Ajuda com Esta Conversa"])
@@ -564,7 +530,7 @@ elif st.session_state.etapa == "App":
 
         with tab2:
             minha_conversa = st.text_area("Cole a conversa que está emperrada ou que você quer continuar:", height=150,
-                placeholder="ex: Ela: 'kk foi boa a reunião' / Eu: 'Foi sim rs' / Ela: 🙂")
+                placeholder="ex: Ela: 'kk foi boa a reunião' / Eu: 'Foi sim rs' / Ela: 🙂", key="seducaoi2")
 
             if st.button("💬 COMO RESPONDER ISSO?", key="seducaoi13"):
                 if minha_conversa.strip():
@@ -589,10 +555,11 @@ elif st.session_state.etapa == "App":
             if st.session_state.get('conv_resp_temp'):
                 st.markdown(f"<div class='card-gold'>{st.session_state['conv_resp_temp']}</div>", unsafe_allow_html=True)
 
-    # ========================
-    # SIMULADOR DE ABORDAGEM
-    # ========================
-    elif st.session_state.pagina == "Simulador":
+        # ========================
+        # SIMULADOR DE ABORDAGEM
+        # ========================
+
+    with _tab_Simulador:
         st.header("🎭 Simulador de Abordagem")
         st.markdown("A IA interpreta a pessoa. Você treina antes de executar na vida real.")
 
@@ -671,10 +638,11 @@ elif st.session_state.etapa == "App":
             if st.session_state.get('sim_analise_temp'):
                 st.markdown(f"<div class='card-gold'>{st.session_state['sim_analise_temp']}</div>", unsafe_allow_html=True)
 
-    # ========================
-    # LINGUAGEM CORPORAL
-    # ========================
-    elif st.session_state.pagina == "Linguagem":
+        # ========================
+        # LINGUAGEM CORPORAL
+        # ========================
+
+    with _tab_Linguagem:
         st.header("👁️ Linguagem Corporal")
 
         area_ling = st.selectbox("Área:", [
@@ -705,10 +673,11 @@ elif st.session_state.etapa == "App":
             st.markdown(f"<div class='card'>{st.session_state['ling_temp']}</div>", unsafe_allow_html=True)
             st.download_button("📋 Baixar (.txt)", data=st.session_state['ling_temp'], file_name="linguagem_corporal.txt", mime="text/plain", key="seducaoi22")
 
-    # ========================
-    # SITUAÇÕES REAIS
-    # ========================
-    elif st.session_state.pagina == "Situacoes":
+        # ========================
+        # SITUAÇÕES REAIS
+        # ========================
+
+    with _tab_Situacoes:
         st.header("🔥 Situações Reais")
         st.markdown("Como agir em situações específicas do dia a dia.")
 
@@ -747,10 +716,11 @@ elif st.session_state.etapa == "App":
                     st.session_state.consultas_salvas.append({'modulo':'Situacoes','tema':situacao_real if 'situacao_real' in dir() else '','conteudo':st.session_state['sit_temp'],'data':datetime.now().strftime('%d/%m %H:%M')})
                     st.success("❤️ Salvo!")
 
-    # ========================
-    # MENTALIDADE DO PROTAGONISTA
-    # ========================
-    elif st.session_state.pagina == "Mentalidade":
+        # ========================
+        # MENTALIDADE DO PROTAGONISTA
+        # ========================
+
+    with _tab_Mentalidade:
         st.header("🧠 Mentalidade do Protagonista")
 
         tema_ment = st.selectbox("Tema:", [
@@ -788,10 +758,11 @@ elif st.session_state.etapa == "App":
                     st.session_state.consultas_salvas.append({'modulo':'Mentalidade','tema':tema_ment if 'tema_ment' in dir() else '','conteudo':st.session_state['ment_temp'],'data':datetime.now().strftime('%d/%m %H:%M')})
                     st.success("❤️ Salvo!")
 
-    # ========================
-    # A ARTE DE CONTAR HISTÓRIAS
-    # ========================
-    elif st.session_state.pagina == "Historias":
+        # ========================
+        # A ARTE DE CONTAR HISTÓRIAS
+        # ========================
+
+    with _tab_Historias:
         st.header("📖 A Arte de Contar Histórias")
 
         tab_aprender, tab_praticar = st.tabs(["📖 Aprender a Técnica", "✍️ Transforme Sua História"])
@@ -827,7 +798,7 @@ elif st.session_state.etapa == "App":
         with tab_praticar:
             st.markdown("Cole uma história que você quer contar melhor — a IA reescreve com mais impacto.")
             minha_historia = st.text_area("Sua história (como você contaria hoje):", height=150,
-                placeholder="ex: No final de semana passado fui numa festa e aconteceu uma coisa engraçada...")
+                placeholder="ex: No final de semana passado fui numa festa e aconteceu uma coisa engraçada...", key="seducaoi1")
 
             if st.button("✍️ REESCREVER COM IMPACTO", key="seducaoi28"):
                 if minha_historia.strip():
@@ -849,10 +820,11 @@ elif st.session_state.etapa == "App":
             if st.session_state.get('hist_reesc_temp'):
                 st.markdown(f"<div class='card-gold'>{st.session_state['hist_reesc_temp']}</div>", unsafe_allow_html=True)
 
-    # ========================
-    # ACADEMIA DE PRESENÇA
-    # ========================
-    elif st.session_state.pagina == "Academia":
+        # ========================
+        # ACADEMIA DE PRESENÇA
+        # ========================
+
+    with _tab_Academia:
         st.header("🎓 Academia de Presença")
         st.markdown("Aulas aprofundadas sobre os pilares do magnetismo pessoal.")
 
@@ -923,10 +895,11 @@ elif st.session_state.etapa == "App":
                     st.session_state.consultas_salvas.append({'modulo':'Academia','tema':aula_presenca if 'aula_presenca' in dir() else '','conteudo':st.session_state['aula_temp'],'data':datetime.now().strftime('%d/%m %H:%M')})
                     st.success("❤️ Salvo!")
 
-    # ========================
-    # DESAFIO SEMANAL
-    # ========================
-    elif st.session_state.pagina == "Desafio":
+        # ========================
+        # DESAFIO SEMANAL
+        # ========================
+
+    with _tab_Desafio:
         st.header("🏆 Desafio Semanal")
         st.markdown(f"Pontuação atual: **{st.session_state.pontuacao_total} pontos** · Nível: **{st.session_state.nivel_atual}**")
 
@@ -970,10 +943,11 @@ elif st.session_state.etapa == "App":
             else:
                 st.success(f"✅ Desafio completo! Nível atual: **{st.session_state.nivel_atual}** · {st.session_state.pontuacao_total} pontos")
 
-    # ========================
-    # MENTOR 24H
-    # ========================
-    elif st.session_state.pagina == "Mentor":
+        # ========================
+        # MENTOR 24H
+        # ========================
+
+    with _tab_Mentor:
         st.header("🤖 Mentor 24h")
         st.markdown("Converse sobre qualquer situação — o mentor fala direto ao ponto.")
 
@@ -1012,39 +986,9 @@ elif st.session_state.etapa == "App":
                 st.session_state.chat_mentor = []
                 st.rerun()
 
-    # ========================
-    # BIBLIOTECA
-    # ========================
-    elif st.session_state.pagina == "Biblioteca":
-        st.header("📚 Biblioteca")
-
-        if not st.session_state.consultas_salvas:
-            st.info("Biblioteca vazia. Salve conteúdos nos módulos.")
-        else:
-            modulos_bib = list(set(c['modulo'] for c in st.session_state.consultas_salvas))
-            filtro = st.selectbox("Filtrar:", ["Todos"] + modulos_bib, key="select_filtro_bib")
-            consultas_f = [c for c in st.session_state.consultas_salvas if filtro == "Todos" or c['modulo'] == filtro]
-
-            st.markdown(f"**{len(consultas_f)} item(ns)**")
-            for i, item in enumerate(reversed(consultas_f)):
-                idx_real = len(st.session_state.consultas_salvas) - 1 - i
-                with st.expander(f"[{item.get('modulo', '')}] {item.get('tema', '')[:60]} — {item['data']}"):
-                    st.markdown(f"<div class='card'>{item['conteudo']}</div>", unsafe_allow_html=True)
-                    col_dl, col_del = st.columns([3, 1])
-                    with col_dl:
-                        st.download_button("📋 Baixar", data=item['conteudo'], file_name=f"{item.get('modulo', '').lower()}.txt", mime="text/plain", key=f"dl_bib_{i}")
-                    with col_del:
-                        if st.button("🗑️", key=f"del_bib_{i}"):
-                            st.session_state.consultas_salvas.pop(idx_real)
-                            st.rerun()
-
-        if st.session_state.historico_consultas:
-            st.markdown("<hr class='divider'>", unsafe_allow_html=True)
-            historico_txt = "\n\n".join(f"[{c['data']}] {c['modulo']} — {c['tema']}\n{c['conteudo']}\n{'─'*40}" for c in st.session_state.historico_consultas)
-            st.download_button("⬇️ Exportar histórico completo (.txt)", data=historico_txt, file_name="historico_presenca.txt", mime="text/plain", key="seducaoi35")
-            if st.button("🗑️ Limpar Histórico", key="seducaoi36"):
-                st.session_state.historico_consultas = []
-                st.rerun()
+        # ========================
+        # BIBLIOTECA
+        # ========================
 
 # --- RODAPÉ ---
 st.markdown(
