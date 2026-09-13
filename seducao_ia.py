@@ -111,10 +111,22 @@ def gerar_json_sessao() -> str:
     dados['salvo_em'] = datetime.now().strftime('%d/%m/%Y %H:%M')
     return json.dumps(dados, ensure_ascii=False, indent=2, default=str)
 
-def carregar_json_sessao(dados: dict):
-    for k in CHAVES_SALVAR:
-        if k in dados:
-            st.session_state[k] = dados[k]
+def carregar_json_sessao(dados):
+    _bloq = {'api_key','etapa','nome_login','chave_login','upload_login','btn_entrar_login'}
+    _pref = (
+        'btn_','sel_','ul_','dl_','cad_','_sub','_sm','_tab','_bsc',
+        'ativo_','rem_','sel_pet_','ev_','prof_','hig_','prev_',
+        'vac_','sint_','comp_','trad_','subs_','amb_','viag_','chat_',
+        'duvida_','emerg_','peso_','data_','obs_','tipo_','vet_','desc_',
+        'local_','prox_','alim','sit_emerg_','tc_','oraf','siau','agmag',
+        'lv','mv','pt','pi','sh','wc','rv','rp','rc',
+    )
+    import re as _re
+    for k, v in dados.items():
+        if k in _bloq: continue
+        if any(k.startswith(p) for p in _pref): continue
+        if _re.match(r'.+_\d+$', k): continue
+        st.session_state[k] = v
 
 def salvar_perfil_cache(usuario: str):
     _cache["perfis"][usuario] = {k: st.session_state.get(k) for k in CHAVES_SALVAR}
@@ -229,7 +241,7 @@ if 'treinos_completos' not in st.session_state: st.session_state['treinos_comple
 
 if st.session_state.etapa == "Login":
     st.markdown("# 🤖 PRESENÇA IA")
-    st.markdown("<div class=\'card\'><b>🔒 ACESSO RESTRITO A CLIENTES DO QUIZ COM PRÊMIOS</b><br>🔗 quizcompremios.com.br</div>", unsafe_allow_html=True)
+    st.markdown("<div class=\'card\'><b>🔒 ACESSO RESTRITO A CLIENTES DO QUIZ COM PRÊMIOS</b><br>🔗 <a href='https://quizcompremios.com.br' target='_blank' style='color:#4F46E5;font-weight:700;text-decoration:underline;'>quizcompremios.com.br</a></div>", unsafe_allow_html=True)
     st.info("💻 **Dica:** Pela complexidade dos agentes, no computador a experiência é mais agradável.")
     with st.container():
         nome  = st.text_input("Seu Nome:", key="nome_login")
@@ -254,6 +266,27 @@ elif st.session_state.etapa == "App":
 
     # TABS — navegação nativa
     (_tab_Home, _tab_Confianca, _tab_Charme, _tab_Oratoria, _tab_Atracao, _tab_Conversa, _tab_Simulador, _tab_Linguagem, _tab_Situacoes, _tab_Mentalidade, _tab_Historias, _tab_Academia, _tab_Desafio, _tab_Mentor) = st.tabs(['🏠 Painel', '💪 Confiança', '✨ Charme', '🎤 Oratória', '💘 Atração', '📱 Conversa', '🎭 Simulador', '👁️ Linguagem', '🔥 Situações', '🧠 Mentalidade', '📖 Histórias', '🎓 Academia', '🏆 Desafio', '🤖 Mentor 24h'])
+
+    # ── BARRA SALVAR — aparece em todas as abas ──
+    with st.expander("💾 Salvar / Carregar meus dados", expanded=False):
+        _bsc1, _bsc2 = st.columns(2)
+        with _bsc1:
+            import json as _jsv
+            _dsv = {k: st.session_state.get(k) for k in list(st.session_state.keys()) if not k.startswith('_') and k not in ('api_key',)}
+            st.download_button("💾 Baixar meus dados (.json)",
+                data=_jsv.dumps(_dsv, ensure_ascii=False, indent=2, default=str),
+                file_name=f"dados_{st.session_state.get('usuario','user')}.json",
+                mime="application/json", key="dl_barra_sv_seducaoi")
+        with _bsc2:
+            _fupsv = st.file_uploader("📂 Carregar dados salvos:", type=["json"], key="ul_barra_sv_seducaoi", label_visibility="collapsed")
+            if _fupsv:
+                try:
+                    import json as _jld
+                    for _k2,_v2 in _jld.loads(_fupsv.read().decode()).items():
+                        if _k2 not in ('api_key','etapa'): st.session_state[_k2] = _v2
+                    st.success("✅ Dados restaurados!"); st.rerun()
+                except: st.error("Arquivo inválido.")
+
 
     with _tab_Home:
         col_u, col_r = st.columns([3, 1])
@@ -325,6 +358,27 @@ elif st.session_state.etapa == "App":
         # CONFIANÇA E PRESENÇA
         # ========================
 
+        st.markdown("<hr class='divider'>", unsafe_allow_html=True)
+        st.markdown("### 💾 Salvar e Carregar Dados")
+        _csl1, _csl2 = st.columns(2)
+        with _csl1:
+            import json as _json_sv
+            _dados_sv = {k: st.session_state.get(k) for k in list(st.session_state.keys()) if not k.startswith('_')}
+            st.download_button("💾 Salvar dados (.json)",
+                data=_json_sv.dumps(_dados_sv, ensure_ascii=False, indent=2, default=str),
+                file_name=f"dados_{st.session_state.get('usuario','user')}.json",
+                mime="application/json", key="dl_sv_seducaoi")
+        with _csl2:
+            _arq_sv = st.file_uploader("📂 Carregar dados:", type=["json"], key="ul_sv_seducaoi")
+            if _arq_sv:
+                try:
+                    import json as _json_ld
+                    for _k, _v in _json_ld.loads(_arq_sv.read().decode()).items():
+                        st.session_state[_k] = _v
+                    st.success("✅ Dados carregados!")
+                    st.rerun()
+                except: st.error("Arquivo inválido.")
+
     with _tab_Confianca:
         st.header("💪 Confiança e Presença")
 
@@ -349,6 +403,7 @@ elif st.session_state.etapa == "App":
                     f"⚡ A MENTALIDADE POR TRÁS:\n[o frame mental que um homem confiante carrega sobre essa situação]"
                 )
                 res = presenca_ia(prompt)
+                if res: st.session_state['res_confianca_seduca1'] = str(res)
                 salvar_consulta("Confianca", area_conf, res)
                 st.session_state['conf_temp'] = res
                 st.session_state.pontuacao_total += 5
@@ -391,6 +446,7 @@ elif st.session_state.etapa == "App":
                     f"🏋️ PRÁTICA:\n[exercício para treinar essa habilidade essa semana]"
                 )
                 res = presenca_ia(prompt)
+                if res: st.session_state['res_charme_seduca2'] = str(res)
                 salvar_consulta("Charme", area_charme, res)
                 st.session_state['charme_temp'] = res
                 st.session_state.pontuacao_total += 5
@@ -432,6 +488,7 @@ elif st.session_state.etapa == "App":
                     f"🏋️ EXERCÍCIO DE VOZ:\n[exercício físico/prático para treinar essa habilidade, que pode ser feito sozinho]"
                 )
                 res = presenca_ia(prompt)
+                if res: st.session_state['res_oratoria_seduca3'] = str(res)
                 salvar_consulta("Oratoria", area_orat, res)
                 st.session_state['orat_temp'] = res
                 st.session_state.pontuacao_total += 5
@@ -474,6 +531,7 @@ elif st.session_state.etapa == "App":
                     f"✅ A LINHA QUE NÃO SE CRUZA:\n[como garantir que a abordagem respeita a outra pessoa — incluindo como reconhecer e aceitar desinteresse com elegância]"
                 )
                 res = presenca_ia(prompt)
+                if res: st.session_state['res_atracao_seduca4'] = str(res)
                 salvar_consulta("Atracao", area_atr, res)
                 st.session_state['atr_temp'] = res
                 st.session_state.pontuacao_total += 5
@@ -519,6 +577,7 @@ elif st.session_state.etapa == "App":
                         f"⚠️ ERRO MAIS COMUM:\n[o que a maioria faz de errado nessa situação]"
                     )
                     res = presenca_ia(prompt)
+                    if res: st.session_state['res_conversa_seduca5'] = str(res)
                     salvar_consulta("Conversa", tecnica_conv, res)
                     st.session_state['conv_tec_temp'] = res
                     st.session_state.pontuacao_total += 5
@@ -547,6 +606,7 @@ elif st.session_state.etapa == "App":
                             f"💡 QUAL USAR E POR QUÊ:\n[recomendação baseada no tom da conversa]"
                         )
                         res = presenca_ia(prompt)
+                        if res: st.session_state['res_conversa_seduca6'] = str(res)
                         salvar_consulta("Conversa", minha_conversa[:60], res)
                         st.session_state['conv_resp_temp'] = res
                 else:
@@ -624,6 +684,7 @@ elif st.session_state.etapa == "App":
                             f"🎯 PARA A PRÓXIMA VEZ:\n[1 coisa principal para melhorar]"
                         )
                         res = presenca_ia(prompt)
+                        if res: st.session_state['res_simulador_seduca7'] = str(res)
                         st.session_state['sim_analise_temp'] = res
                         st.session_state.pontuacao_total += 10
                         st.session_state.treinos_completos += 1
@@ -664,6 +725,7 @@ elif st.session_state.etapa == "App":
                     f"🏋️ EXERCÍCIO:\n[como treinar isso — um exercício físico real, não só teoria]"
                 )
                 res = presenca_ia(prompt)
+                if res: st.session_state['res_linguagem_seduca8'] = str(res)
                 salvar_consulta("Linguagem", area_ling, res)
                 st.session_state['ling_temp'] = res
                 st.session_state.pontuacao_total += 5
@@ -701,6 +763,7 @@ elif st.session_state.etapa == "App":
                     f"✅ COMO SABER SE ESTÁ INDO BEM:\n[sinais de que a situação está evoluindo na direção certa]"
                 )
                 res = presenca_ia(prompt)
+                if res: st.session_state['res_situacoes_seduca9'] = str(res)
                 salvar_consulta("Situacoes", situacao_real, res)
                 st.session_state['sit_temp'] = res
                 st.session_state.pontuacao_total += 5
@@ -743,6 +806,7 @@ elif st.session_state.etapa == "App":
                     f"⚡ A FRASE QUE RESUME:\n[1 frase curta e poderosa para fixar essa mentalidade]"
                 )
                 res = presenca_ia(prompt)
+                if res: st.session_state['res_mentalidade_seduca10'] = str(res)
                 salvar_consulta("Mentalidade", tema_ment, res)
                 st.session_state['ment_temp'] = res
                 st.session_state.pontuacao_total += 5
@@ -786,6 +850,7 @@ elif st.session_state.etapa == "App":
                         f"🏋️ PRATIQUE:\n[exercício para aplicar isso com histórias da sua própria vida]"
                     )
                     res = presenca_ia(prompt)
+                    if res: st.session_state['res_historias_seduca11'] = str(res)
                     salvar_consulta("Historias", tecnica_hist, res)
                     st.session_state['hist_tec_temp'] = res
                     st.session_state.pontuacao_total += 5
@@ -812,6 +877,7 @@ elif st.session_state.etapa == "App":
                             f"📚 O QUE MUDOU:\n[explique as escolhas narrativas feitas]"
                         )
                         res = presenca_ia(prompt)
+                        if res: st.session_state['res_historias_seduca12'] = str(res)
                         salvar_consulta("Historias", minha_historia[:60], res)
                         st.session_state['hist_reesc_temp'] = res
                 else:
@@ -880,6 +946,7 @@ elif st.session_state.etapa == "App":
                     f"[1 frase poderosa e memorável que cristaliza a essência da aula]"
                 )
                 res = presenca_ia(prompt, "Escreva para um homem inteligente que já tentou muita coisa e não quer mais teoria vaga — ele quer o mecanismo real e como aplicar.")
+                if res: st.session_state['res_academia_seduca13'] = str(res)
                 salvar_consulta("Academia", aula_presenca, res)
                 st.session_state['aula_temp'] = res
                 st.session_state.pontuacao_total += 15
@@ -923,6 +990,7 @@ elif st.session_state.etapa == "App":
                     f"⚡ BÔNUS:\n[variação mais difícil para quem quiser ir além]"
                 )
                 res = presenca_ia(prompt)
+                if res: st.session_state['res_desafio_seduca14'] = str(res)
                 salvar_consulta("Desafio", area_desafio, res)
                 st.session_state['desafio_temp'] = res
                 st.session_state['desafio_completo'] = False
@@ -976,6 +1044,7 @@ elif st.session_state.etapa == "App":
                 if pergunta_mentor.strip():
                     with st.spinner("..."):
                         resp = presenca_ia(pergunta_mentor, "Responda como um mentor que já passou por isso — direto, sem enrolação, com conselho real. Se a situação pedir honestidade dura, dê. Se precisar de encorajamento, dê. Fale de igual para igual.")
+                        if resp: st.session_state['res_mentor_seduca15'] = str(resp)
                     st.session_state.chat_mentor.append({"role": "user", "content": pergunta_mentor})
                     st.session_state.chat_mentor.append({"role": "assistant", "content": resp})
                     st.session_state.mentor_key += 1
