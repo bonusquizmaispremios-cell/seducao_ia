@@ -7,6 +7,18 @@ import re
 # --- CONFIGURAÇÃO DA PÁGINA ---
 st.set_page_config(page_title="PRESENÇA IA", layout="wide")
 
+st.markdown("""
+<style>
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+header {visibility: hidden;}
+[data-testid="stToolbar"] {visibility: hidden;}
+[data-testid="stDecoration"] {visibility: hidden;}
+[data-testid="stStatusWidget"] {visibility: hidden;}
+</style>
+""", unsafe_allow_html=True)
+
+
 # --- ESTILO CSS ---
 st.markdown("""
     <style>
@@ -241,7 +253,7 @@ if 'treinos_completos' not in st.session_state: st.session_state['treinos_comple
 
 if st.session_state.etapa == "Login":
     st.markdown("# 🤖 PRESENÇA IA")
-    st.markdown("<div class=\'card\'><b>🔒 ACESSO RESTRITO A CLIENTES DO QUIZ COM PRÊMIOS</b><br>🔗 <a href='https://quizcompremios.com.br' target='_blank' style='color:#4F46E5;font-weight:700;text-decoration:underline;'>quizcompremios.com.br</a></div>", unsafe_allow_html=True)
+    st.markdown("<div class=\'card\'><b>🔒 ACESSO RESTRITO A CLIENTES DO MEUSAGENTESIA.COM.BR</b><br>🔗 <a href='https://meusagentesia.com.br' target='_blank' style='color:#4F46E5;font-weight:700;text-decoration:underline;'>meusagentesia.com.br</a></div>", unsafe_allow_html=True)
     st.info("💻 **Dica:** Pela complexidade dos agentes, no computador a experiência é mais agradável.")
     with st.container():
         nome  = st.text_input("Seu Nome:", key="nome_login")
@@ -1062,6 +1074,6 @@ elif st.session_state.etapa == "App":
 # --- RODAPÉ ---
 st.markdown(
     "<div style='text-align:center;color:#4C1D95;font-size:0.8em;margin-top:60px;'>"
-    "© 2026 Presença IA — Confiança, Charme e Oratória · Quiz Com Prêmios"
+    "© 2026 Presença IA — Confiança, Charme e Oratória · MeusAgentesIA.com.br"
     "</div>", unsafe_allow_html=True
 )
